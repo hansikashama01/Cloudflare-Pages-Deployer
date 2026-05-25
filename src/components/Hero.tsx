@@ -1,22 +1,27 @@
-import { useEffect, useState } from 'react';
-import { Github, Linkedin, Mail, ChevronDown } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { ChevronDown } from 'lucide-react';
+import ProfilePic from '../assets/profile.svg';
+import { motion } from 'framer-motion';
 
 const Hero = () => {
-  const [displayedText, setDisplayedText] = useState('');
-  const fullText = 'Automating infrastructure, orchestrating reliability';
+  const heroRef = useRef<HTMLElement | null>(null);
+  const [glowPos, setGlowPos] = useState({ x: -1000, y: -1000 });
 
   useEffect(() => {
-    let index = 0;
-    const timer = setInterval(() => {
-      if (index <= fullText.length) {
-        setDisplayedText(fullText.slice(0, index));
-        index++;
-      } else {
-        clearInterval(timer);
-      }
-    }, 50);
+    const onMove = (e: MouseEvent) => {
+      const rect = heroRef.current?.getBoundingClientRect();
+      if (!rect) return;
+      setGlowPos({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+    };
 
-    return () => clearInterval(timer);
+    const onLeave = () => setGlowPos({ x: -1000, y: -1000 });
+    const node = heroRef.current;
+    node?.addEventListener('mousemove', onMove);
+    node?.addEventListener('mouseleave', onLeave);
+    return () => {
+      node?.removeEventListener('mousemove', onMove);
+      node?.removeEventListener('mouseleave', onLeave);
+    };
   }, []);
 
   const scrollToAbout = () => {
@@ -24,77 +29,132 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-[#0a0a0a] via-[#111111] to-[#0a0a0a]">
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-40"></div>
+    <section
+      ref={heroRef}
+      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#050508] px-4 py-16 sm:px-6 lg:px-8"
+    >
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,197,94,0.12),transparent_18%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.06),transparent_18%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[url('/noise.svg')] opacity-10 pointer-events-none" />
 
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="space-y-8">
-          <div className="space-y-4">
-            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tight">
-              Hansika Shamal
-            </h1>
-            <div className="inline-block bg-white/5 backdrop-blur-sm px-6 py-3 rounded border border-white/10">
-              <p className="text-xl sm:text-2xl text-gray-300 font-medium">
-                 DevOps Engineer 
+      <div
+        aria-hidden
+        style={{ left: glowPos.x, top: glowPos.y }}
+        className="pointer-events-none absolute w-72 h-72 -translate-x-1/2 -translate-y-1/2 rounded-full mix-blend-screen opacity-90 blur-3xl transition-all duration-200"
+      >
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            borderRadius: '9999px',
+            background: 'radial-gradient(circle at 30% 30%, rgba(34,197,94,0.22), rgba(34,197,94,0.12) 35%, rgba(255,255,255,0.06) 65%, transparent 82%)',
+          }}
+        />
+      </div>
+
+      <div className="relative z-10 max-w-6xl mx-auto w-full">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease: 'easeOut' }}
+          className="grid gap-10 lg:grid-cols-[1.4fr_0.95fr] items-center"
+        >
+          <div className="space-y-7">
+            <div className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-white/5 px-4 py-2 text-xs uppercase tracking-[0.3em] text-emerald-300 shadow-[0_0_30px_rgba(34,197,94,0.12)]">
+              black · white · green
+            </div>
+
+            <div className="space-y-5">
+              <h1 className="text-5xl font-semibold leading-tight text-white sm:text-6xl lg:text-7xl">
+                Hansika Shamal
+              </h1>
+              <p className="max-w-xl text-lg leading-8 text-slate-300 sm:text-xl">
+                Clean DevOps systems in black, white and green—automation, cloud delivery, and secure pipelines with strong visual clarity.
               </p>
+            </div>
+
+            <div className="flex flex-wrap gap-4">
+              <button
+                onClick={() => document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })}
+                className="rounded-full bg-emerald-500/15 px-6 py-3 text-sm font-semibold text-emerald-200 ring-1 ring-emerald-400/20 transition hover:bg-emerald-500/25"
+              >
+                View Work
+              </button>
+              <button
+                onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
+                className="rounded-full border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+              >
+                Contact
+              </button>
+            </div>
+
+            <div className="grid max-w-md grid-cols-3 gap-3">
+              {['Cloud', 'Infra', 'Auto'].map((item) => (
+                <div
+                  key={item}
+                  className="glass rounded-3xl border border-white/10 px-4 py-3 text-center text-sm font-semibold text-slate-100"
+                >
+                  {item}
+                </div>
+              ))}
             </div>
           </div>
 
-          <div className="h-16 flex items-center justify-center">
-            <p className="text-lg sm:text-xl text-gray-400 font-mono">
-              {displayedText}
-              <span className="animate-pulse">|</span>
-            </p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, ease: 'easeOut' }}
+            className="relative"
+          >
+            <div className="absolute -left-10 top-12 h-36 w-36 rounded-full bg-emerald-500/10 blur-3xl" />
+            <div className="glass-strong relative overflow-hidden rounded-[2rem] border border-white/10 p-5 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.35)]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,197,94,0.14),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.06),transparent_30%)] opacity-75" />
+              <div className="relative space-y-5">
+                <div className="flex items-center gap-4 rounded-[1.75rem] border border-white/10 bg-black/30 p-4">
+                  <div className="flex h-24 w-24 items-center justify-center rounded-full border border-emerald-400/20 bg-white/5 shadow-2xl">
+                    <img
+                      src="/profile.png"
+                      alt="Hansika Shamal"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = ProfilePic;
+                      }}
+                      className="h-20 w-20 rounded-full object-cover"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <p className="text-xs uppercase tracking-[0.28em] text-slate-400">Lead DevOps</p>
+                    <h2 className="text-2xl font-semibold text-white">Hansika</h2>
+                    <p className="text-sm text-slate-300">Precise cloud delivery</p>
+                  </div>
+                </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
-            <button
-              onClick={() => document.querySelector('#projects')?.scrollIntoView({ behavior: 'smooth' })}
-              className="px-8 py-3 bg-white text-black font-semibold rounded hover:bg-gray-200 transition-all duration-200 hover:scale-105 shadow-lg"
-            >
-              View Projects
-            </button>
-            <button
-              onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
-              className="px-8 py-3 bg-transparent border-2 border-white/20 text-white font-semibold rounded hover:bg-white/5 hover:border-white/40 transition-all duration-200"
-            >
-              Get in Touch
-            </button>
-          </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {[
+                    { label: 'Cloud', value: 'AWS & GCP' },
+                    { label: 'Tools', value: 'Terraform + Docker' },
+                    { label: 'CI/CD', value: 'GitHub Actions' },
+                    { label: 'Result', value: 'Reliable' },
+                  ].map((item) => (
+                    <div key={item.label} className="glass rounded-3xl border border-white/10 p-4">
+                      <p className="text-xs uppercase tracking-[0.24em] text-slate-400">{item.label}</p>
+                      <p className="mt-3 text-sm text-slate-200 font-semibold">{item.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
 
-          <div className="flex gap-6 justify-center pt-8">
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gray-400 hover:text-white transition-colors duration-200 hover:scale-110 transform"
-            >
-              <Github size={24} />
-            </a>
-            <a
-              href="https://linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-gray-400 hover:text-white transition-colors duration-200 hover:scale-110 transform"
-            >
-              <Linkedin size={24} />
-            </a>
-            <a
-              href="mailto:alex@example.com"
-              className="text-gray-400 hover:text-white transition-colors duration-200 hover:scale-110 transform"
-            >
-              <Mail size={24} />
-            </a>
-          </div>
+        <div className="mt-10 flex justify-center">
+          <button
+            onClick={scrollToAbout}
+            className="inline-flex items-center gap-2 rounded-full border border-emerald-400/20 bg-white/5 px-5 py-3 text-sm font-semibold text-white transition hover:bg-white/10"
+          >
+            <ChevronDown size={18} />
+            Learn more
+          </button>
         </div>
       </div>
-
-      <button
-        onClick={scrollToAbout}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-gray-400 hover:text-white transition-colors duration-200 animate-bounce"
-      >
-        <ChevronDown size={32} />
-      </button>
     </section>
   );
 };

@@ -11,10 +11,16 @@
     "typecheck": "tsc --noEmit -p tsconfig.app.json"
   },
   "dependencies": {
+    "@studio-freight/lenis": "^1.0.42",
     "@supabase/supabase-js": "^2.57.4",
+    "classnames": "^2.5.1",
+    "framer-motion": "^12.40.0",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-tsparticles": "^2.12.2",
+    "three": "^0.184.0",
+    "tsparticles": "^4.0.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
