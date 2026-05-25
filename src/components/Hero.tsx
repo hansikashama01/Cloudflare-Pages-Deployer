@@ -35,7 +35,7 @@ const Hero = () => {
             </h1>
             <div className="inline-block bg-white/5 backdrop-blur-sm px-6 py-3 rounded border border-white/10">
               <p className="text-xl sm:text-2xl text-gray-300 font-medium">
-                DevOps Engineer
+                Intern DevOps Engineer 
               </p>
             </div>
           </div>
