@@ -31,7 +31,7 @@ const Hero = () => {
         <div className="space-y-8">
           <div className="space-y-4">
             <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-white tracking-tight">
-              Alex Rivera
+              Hansika Shamal
             </h1>
             <div className="inline-block bg-white/5 backdrop-blur-sm px-6 py-3 rounded border border-white/10">
               <p className="text-xl sm:text-2xl text-gray-300 font-medium">
