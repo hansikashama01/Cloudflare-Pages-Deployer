@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import Particles from 'react-tsparticles';
+import Particles from '@tsparticles/react';
 import { loadFull } from 'tsparticles';
 
 const ParticlesBackground = () => {
@@ -13,7 +13,7 @@ const ParticlesBackground = () => {
     fpsLimit: 60,
     particles: {
       number: { value: 80, density: { enable: true, area: 800 } },
-      color: { value: ['#0ea5ff', '#7c3aed', '#06b6d4'] },
+      color: { value: ['#22c55e', '#d9f99d', '#ffffff'] },
       shape: { type: 'circle' },
       opacity: { value: 0.7, random: { enable: true, minimumValue: 0.2 } },
       size: { value: { min: 0.6, max: 2.2 } },
