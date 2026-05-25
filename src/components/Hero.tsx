@@ -1,11 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
-import ProfilePic from '../assets/profile.svg';
+import ProfilePic from '../assets/profile1.png';
 import { motion } from 'framer-motion';
 
 const Hero = () => {
   const heroRef = useRef<HTMLElement | null>(null);
   const [glowPos, setGlowPos] = useState({ x: -1000, y: -1000 });
+  const [terminalLines, setTerminalLines] = useState<string[]>([]);
+  const [introVisible, setIntroVisible] = useState(true);
 
   useEffect(() => {
     const onMove = (e: MouseEvent) => {
@@ -22,6 +24,44 @@ const Hero = () => {
       node?.removeEventListener('mousemove', onMove);
       node?.removeEventListener('mouseleave', onLeave);
     };
+  }, []);
+
+  useEffect(() => {
+    const lines = [
+      'Initializing kernel modules...',
+      'Loading CI/CD pipeline configs...',
+      'Connecting to Azure cloud...',
+      'Running Terraform apply...',
+      'System ready. Welcome.',
+    ];
+
+    let lineIndex = 0;
+    let charIndex = 0;
+
+    const interval = window.setInterval(() => {
+      if (lineIndex >= lines.length) {
+        setTimeout(() => setIntroVisible(false), 400);
+        window.clearInterval(interval);
+        return;
+      }
+
+      const currentLine = lines[lineIndex];
+      const nextText = currentLine.slice(0, charIndex + 1);
+
+      setTerminalLines((prev) => {
+        const next = [...prev];
+        next[lineIndex] = nextText;
+        return next;
+      });
+
+      charIndex += 1;
+      if (charIndex > currentLine.length) {
+        lineIndex += 1;
+        charIndex = 0;
+      }
+    }, 18);
+
+    return () => window.clearInterval(interval);
   }, []);
 
   const scrollToAbout = () => {
@@ -109,37 +149,19 @@ const Hero = () => {
             <div className="glass-strong relative overflow-hidden rounded-[2rem] border border-white/10 p-5 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.35)]">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(34,197,94,0.14),transparent_28%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.06),transparent_30%)] opacity-75" />
               <div className="relative space-y-5">
-                <div className="flex items-center gap-4 rounded-[1.75rem] border border-white/10 bg-black/30 p-4">
-                  <div className="flex h-24 w-24 items-center justify-center rounded-full border border-emerald-400/20 bg-white/5 shadow-2xl">
-                    <img
-                      src="/profile.png"
-                      alt="Hansika Shamal"
-                      onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).src = ProfilePic;
-                      }}
-                      className="h-20 w-20 rounded-full object-cover"
-                    />
-                  </div>
-                  <div className="space-y-1">
-                    <p className="text-xs uppercase tracking-[0.28em] text-slate-400">Lead DevOps</p>
-                    <h2 className="text-2xl font-semibold text-white">Hansika</h2>
-                    <p className="text-sm text-slate-300">Precise cloud delivery</p>
-                  </div>
+                <div className="flex items-center justify-center rounded-[2.25rem] border border-white/10 bg-black/30 p-8">
+                <div className="relative h-52 w-52 overflow-hidden rounded-full border border-emerald-400/20 bg-white/5 shadow-[0_40px_100px_-40px_rgba(0,0,0,0.45)]">
+                  <div className="absolute inset-0 rounded-full bg-[radial-gradient(circle_at_top_left,rgba(34,197,94,0.18),transparent_55%)]" />
+                  <img
+                    src="/profile.png"
+                    alt="Hansika Shamal"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).src = ProfilePic;
+                    }}
+                    className="relative h-full w-full object-cover"
+                  />
                 </div>
-
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {[
-                    { label: 'Cloud', value: 'AWS & GCP' },
-                    { label: 'Tools', value: 'Terraform + Docker' },
-                    { label: 'CI/CD', value: 'GitHub Actions' },
-                    { label: 'Result', value: 'Reliable' },
-                  ].map((item) => (
-                    <div key={item.label} className="glass rounded-3xl border border-white/10 p-4">
-                      <p className="text-xs uppercase tracking-[0.24em] text-slate-400">{item.label}</p>
-                      <p className="mt-3 text-sm text-slate-200 font-semibold">{item.value}</p>
-                    </div>
-                  ))}
-                </div>
+              </div>
               </div>
             </div>
           </motion.div>
@@ -155,6 +177,31 @@ const Hero = () => {
           </button>
         </div>
       </div>
+
+      {introVisible && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#050508] px-4 py-8">
+          <div className="w-full max-w-2xl overflow-hidden rounded-[2rem] border border-emerald-400/15 bg-[#07110c] p-6 shadow-[0_40px_120px_-40px_rgba(0,0,0,0.65)]">
+            <div className="mb-4 flex items-center justify-between text-xs uppercase tracking-[0.35em] text-slate-400">
+              <span className="flex items-center gap-2">
+                <span className="h-2.5 w-2.5 rounded-full bg-rose-500" /> boot.sh
+              </span>
+              <span>Initializing systems</span>
+            </div>
+            <div className="space-y-2 rounded-3xl bg-black/20 p-4 font-mono text-sm leading-6 text-emerald-300 ring-1 ring-white/5">
+              {terminalLines.map((line, index) => (
+                <div key={`${line}-${index}`} className="flex items-center gap-2">
+                  <span className="text-emerald-300">›</span>
+                  <span className="truncate text-slate-200">{line}</span>
+                </div>
+              ))}
+              <div className="flex items-center gap-2 text-emerald-200">
+                <span className="text-emerald-300">›</span>
+                <span className="animate-pulse">█</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };
